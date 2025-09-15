@@ -44,7 +44,7 @@ app.MapPost("/onboarding/files", [Microsoft.AspNetCore.Authorization.AllowAnonym
 async (HttpRequest request, AlfrescoService alfresco) => // switched here to http request because [fromform] causes anti forgery error
 {
 
-    var parentNodeId = "792295f5-3998-40f4-8179-852f110cb033";
+    
     // setting up cinfront and cinback in formfiles
     if (!request.HasFormContentType) 
         return Results.BadRequest("Expected multipart/form-data");
@@ -65,7 +65,7 @@ async (HttpRequest request, AlfrescoService alfresco) => // switched here to htt
     var cinFront = formFiles.Files.GetFile("CinFront");
     var cinBack = formFiles.Files.GetFile("CinBack");
 
-    var cinFolderId = await alfresco.CreateFolder(parentNodeId, formData);
+    var cinFolderId = await alfresco.CreateFolder(formData);
 
     //  Upload files into CIN folder
     if (cinFront != null)

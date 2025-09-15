@@ -19,6 +19,7 @@ public class AlfrescoService
         //string Username = _configuration["Alfresco:Username"];
         //string Password = _configuration["Alfresco:Password"];
         //string BaseUrl = _configuration["Alfresco:BaseUrl"];
+        
 
 
         _http = http;
@@ -35,10 +36,10 @@ public class AlfrescoService
     }
 
 
-    public async Task<string> CreateFolder(string parentNodeId, Client folderData) //creates folder inside of library with Cin
+    public async Task<string> CreateFolder( Client folderData) //creates folder inside of library with Cin
     {
-
-
+       
+        string parentNodeId =  _configuration["Alfresco:LibraryNodeId"]!;
         var payload = new
         {
             name = folderData.CIN,       // folder name in Alfresco

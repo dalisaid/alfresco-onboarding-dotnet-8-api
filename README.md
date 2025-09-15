@@ -88,7 +88,8 @@ Mongo settings and Alfresco config `server/appsettings.json`:
 {
   "MongoSettings": {
     "ConnectionString": "mongodb://localhost:27017",
-    "DatabaseName": "AppDatabase"
+    "DatabaseName": "AppDatabase",
+    "LibraryNodeId":"792295f5-3998-40f4-8179-852f110cb033"
   },
   "Alfresco": {
     "BaseUrl": "http://localhost/alfresco",// nginx proxy handles communicating with alfresco 
@@ -140,10 +141,10 @@ Alfresco:
 
 
 ```csharp
-public async Task<string> CreateFolder(string parentNodeId, Client folderData) //creates folder inside of library with Cin
+public async Task<string> CreateFolder(Client folderData) //creates folder inside of library with Cin
     {
 
-
+        string parentNodeId =  _configuration["Alfresco:LibraryNodeId"]!;
         var payload = new
         {
             name = folderData.CIN,       // folder name in Alfresco
@@ -197,7 +198,7 @@ app.MapPost("/onboarding/files", [Microsoft.AspNetCore.Authorization.AllowAnonym
 async (HttpRequest request, AlfrescoService alfresco) => // switched here to http request because [fromform] causes anti forgery error
 {
 
-    var parentNodeId = "792295f5-3998-40f4-8179-852f110cb033";
+    
     // setting up cinfront and cinback in formfiles
     if (!request.HasFormContentType) 
         return Results.BadRequest("Expected multipart/form-data");
@@ -218,7 +219,7 @@ async (HttpRequest request, AlfrescoService alfresco) => // switched here to htt
     var cinFront = formFiles.Files.GetFile("CinFront");
     var cinBack = formFiles.Files.GetFile("CinBack");
 
-    var cinFolderId = await alfresco.CreateFolder(parentNodeId, formData);
+    var cinFolderId = await alfresco.CreateFolder(formData);
 
     //  Upload files into CIN folder
     if (cinFront != null)
