@@ -88,13 +88,14 @@ Mongo settings and Alfresco config `server/appsettings.json`:
 {
   "MongoSettings": {
     "ConnectionString": "mongodb://localhost:27017",
-    "DatabaseName": "AppDatabase",
-    "LibraryNodeId":"792295f5-3998-40f4-8179-852f110cb033"
+    "DatabaseName": "AppDatabase"
+    
   },
   "Alfresco": {
     "BaseUrl": "http://localhost/alfresco",// nginx proxy handles communicating with alfresco 
     "Username": "admin",
-    "Password": "admin"
+    "Password": "admin",
+    "LibraryNodeId":"792295f5-3998-40f4-8179-852f110cb033"
   }
 }
 ```
