@@ -6,23 +6,24 @@ namespace OnboardingApi.Services;
 public class AlfrescoService
 {
     private readonly HttpClient _http;
-    private readonly IConfiguration _configuration; // just a reminder 
-    private const string BaseUrl = "http://localhost/alfresco";//
-    private const string Username = "admin";//
-    private const string Password = "admin";//
-    //hardcoded but could use dependency injection through _configuration
+    private readonly IConfiguration _config; 
+    
 
 
-    public AlfrescoService(HttpClient http)
+
+    public AlfrescoService(HttpClient http,IConfiguration config)
     {
-        // could do this instead ,probably better
-        //string Username = _configuration["Alfresco:Username"];
-        //string Password = _configuration["Alfresco:Password"];
-        //string BaseUrl = _configuration["Alfresco:BaseUrl"];
-        
 
 
+
+        _config = config;
         _http = http;
+
+
+        string Username = config["Alfresco:Username"] ?? throw new InvalidOperationException("Username not configured");
+        string Password = config["Alfresco:Password"] ?? throw new InvalidOperationException("Password not configured");
+        string BaseUrl = config["Alfresco:BaseUrl"] ?? throw new InvalidOperationException("BaseUrl not configured");
+
         _http.BaseAddress = new Uri(BaseUrl);
 
 
@@ -38,8 +39,8 @@ public class AlfrescoService
 
     public async Task<string> CreateFolder( Client folderData) //creates folder inside of library with Cin
     {
-       
-        string parentNodeId =  _configuration["Alfresco:LibraryNodeId"]!;
+
+        string parentNodeId = _config["Alfresco:LibraryNodeId"] ?? throw new InvalidOperationException("LibraryNodeId not configured");
         var payload = new
         {
             name = folderData.CIN,       // folder name in Alfresco
@@ -47,7 +48,7 @@ public class AlfrescoService
             properties = new Dictionary<string, object>
         {
             { "cm:title", $"{folderData.FirstName} {folderData.LastName}" },
-            { "cm:description", $"Client {folderData.FirstName} {folderData.LastName}, CIN: {folderData.CIN}" }
+            { "cm:description", $"Client {folderData.FirstName} {folderData.LastName}, Card Number: {folderData.BankCardNumber}" }
         }
 
         };

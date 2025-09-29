@@ -21,9 +21,7 @@ app.UseCors("AngularClient");
 
 
 // RESt api that handles saving into mongodb
-app.MapPost("/onboarding", async (Client data,
-                                  MongoService mongo,
-                                  AlfrescoService alfresco) =>
+app.MapPost("/onboarding", async (Client data,MongoService mongo ) =>
 {
     try
     {

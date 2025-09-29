@@ -55,7 +55,7 @@ Project-location/
 - .NET 8 SDK
 - Node.js + Angular CLI
 - MongoDB installed locally (manage with MongoDB Compass) 
-- Alfresco instance running in Docker(Created through https://github.com/aborroy/alfresco-installer version 7.4)
+- Alfresco instance running in Docker(Community edition https://github.com/Alfresco/acs-deployment/tree/master)
 
 ---
 
@@ -92,7 +92,7 @@ Mongo settings and Alfresco config `server/appsettings.json`:
     
   },
   "Alfresco": {
-    "BaseUrl": "http://localhost/alfresco",// nginx proxy handles communicating with alfresco 
+    "BaseUrl": "http://localhost:8080",// nginx proxy handles communicating with alfresco 
     "Username": "admin",
     "Password": "admin",
     "LibraryNodeId":"792295f5-3998-40f4-8179-852f110cb033"
@@ -122,12 +122,12 @@ MongoDB:
 public class MongoService
 {
     private readonly IMongoCollection<Client> _collection;
-     private readonly IConfiguration _configuration;
+ 
 
     public MongoService(IConfiguration config)
     {
         var client = new MongoClient(config["Mongo:ConnectionString"]);
-        var database = client.GetDatabase(_configuration!["Mongo:DatabaseName"]);
+        var database = client.GetDatabase(config["Mongo:DatabaseName"]);
         _collection = database.GetCollection<Client>("Clients");
     }
 
@@ -145,7 +145,7 @@ Alfresco:
 public async Task<string> CreateFolder(Client folderData) //creates folder inside of library with Cin
     {
 
-        string parentNodeId =  _configuration["Alfresco:LibraryNodeId"]!;
+        string parentNodeId = _config["Alfresco:LibraryNodeId"] ?? throw new InvalidOperationException("LibraryNodeId not configured");
         var payload = new
         {
             name = folderData.CIN,       // folder name in Alfresco
@@ -168,15 +168,21 @@ public async Task<string> CreateFolder(Client folderData) //creates folder insid
     }
 
 ```
+How it looks like side:
+
+![app](Images/app snip.png)
+![app](Images/alfresco snip folder.png)
+![app](Images/alfresco snip file.png)
+![app](Images/mongo snip.png)
+
+
 
 
 ### 6) Minimal API handler (save data to MongoDB API and create Alfresco folder, upload files and metadata API)
 
 ```csharp
 // RESt api that handles saving into mongodb
-app.MapPost("/onboarding", async (Client data,
-                                  MongoService mongo,
-                                  AlfrescoService alfresco) =>
+app.MapPost("/onboarding", async (Client data, MongoService mongo) =>
 {
     try
     {
