@@ -170,10 +170,10 @@ public async Task<string> CreateFolder(Client folderData) //creates folder insid
 ```
 How it looks like side:
 
-![app](Images/app snip.png)
-![app](Images/alfresco snip folder.png)
-![app](Images/alfresco snip file.png)
-![app](Images/mongo snip.png)
+![app](S:\App\Images/app snip.png)
+![alfresco folder](S:\App\Images/alfresco snip folder.png)
+![alfresco file](S:\App\Images/alfresco snip file.png)
+![Mongo](S:\App\Images/mongo snip.png)
 
 
 
