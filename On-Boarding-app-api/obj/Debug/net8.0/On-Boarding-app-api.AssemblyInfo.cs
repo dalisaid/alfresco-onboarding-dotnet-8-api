@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("On-Boarding-app-api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5f1465c25b642f1c41a6486f2f21616923dac40")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e25842224b014553909fba92428490b97bb96412")]
 [assembly: System.Reflection.AssemblyProductAttribute("On-Boarding-app-api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("On-Boarding-app-api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

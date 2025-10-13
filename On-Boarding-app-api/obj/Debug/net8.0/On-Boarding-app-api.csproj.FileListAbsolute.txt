@@ -40,3 +40,4 @@ S:\App\On-Boarding-app-api\bin\Debug\net8.0\SharpCompress.dll
 S:\App\On-Boarding-app-api\bin\Debug\net8.0\Snappier.dll
 S:\App\On-Boarding-app-api\bin\Debug\net8.0\ZstdSharp.dll
 S:\App\On-Boarding-app-api\obj\Debug\net8.0\On-Boarding-app-api.sourcelink.json
+S:\App\On-Boarding-app-api\bin\Debug\net8.0\PortCMIS.dll

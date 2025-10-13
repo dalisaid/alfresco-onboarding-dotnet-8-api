@@ -6,12 +6,12 @@ namespace OnboardingApi.Services;
 public class AlfrescoService
 {
     private readonly HttpClient _http;
-    private readonly IConfiguration _config; 
-    
+    private readonly IConfiguration _config;
 
 
 
-    public AlfrescoService(HttpClient http,IConfiguration config)
+
+    public AlfrescoService(HttpClient http, IConfiguration config)
     {
 
 
@@ -37,10 +37,10 @@ public class AlfrescoService
     }
 
 
-    public async Task<string> CreateFolder( Client folderData) //creates folder inside of library with Cin
+    public async Task<string> CreateFolder(Client folderData) //creates folder inside of library with Cin
     {
 
-        string parentNodeId = _config["Alfresco:LibraryNodeId"] ?? throw new InvalidOperationException("LibraryNodeId not configured");
+        string parentNodeId = _config["Alfresco:FolderNodeId"] ?? throw new InvalidOperationException("FolderNodeId not configured");
         var payload = new
         {
             name = folderData.CIN,       // folder name in Alfresco
@@ -76,4 +76,9 @@ public class AlfrescoService
 
         response.EnsureSuccessStatusCode();
     }
+    
+    
+
+    
+
 }

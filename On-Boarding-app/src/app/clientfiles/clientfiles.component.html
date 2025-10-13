@@ -1,0 +1,35 @@
+<div *ngFor="let subfolder of parentfolder" class="mb-8">
+  <!-- Folder Header -->
+  <div class="bg-gradient-to-r from-blue-600 to-indigo-600 text-white p-4 rounded-t-xl shadow">
+    <h2 class="text-xl font-semibold">{{ subfolder.folderName }}</h2>
+    <p class="text-sm opacity-90">{{ subfolder.title }}</p>
+    <p class="text-sm opacity-80 italic">{{ subfolder.description }}</p>
+  </div>
+
+  <!-- File List -->
+  <div class="bg-white rounded-b-xl shadow border border-gray-100 divide-y divide-gray-200">
+    <div
+      *ngFor="let file of subfolder.files"
+      class="flex items-center gap-4 p-4 hover:bg-gray-50 transition"
+    >
+      <!-- Thumbnail -->
+      <div class="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+        <img
+          *ngIf="file.fileContentBase64"
+          [src]="'data:image/' + (file.fileName.split('.').pop()) + ';base64,' + file.fileContentBase64"
+          [alt]="file.fileName"
+          class="object-cover w-full h-full"
+        />
+      </div>
+
+      <!-- File Info -->
+      <div class="flex-1">
+        <p class="text-gray-800 font-medium truncate">{{ file.fileName }}</p>
+        <p class="text-gray-500 text-sm">{{ file.filePath }}</p>
+      </div>
+
+      <!-- Actions -->
+      
+    </div>
+  </div>
+</div>

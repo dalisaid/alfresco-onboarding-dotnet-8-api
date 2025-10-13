@@ -158,6 +158,15 @@
           }
         }
       },
+      "PortCMIS/0.3.0": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard1.1/PortCMIS.dll": {}
+        },
+        "runtime": {
+          "lib/netstandard1.1/PortCMIS.dll": {}
+        }
+      },
       "RestSharp/112.1.0": {
         "type": "package",
         "compile": {
@@ -772,6 +781,18 @@
         "packageIcon.png"
       ]
     },
+    "PortCMIS/0.3.0": {
+      "sha512": "S51c8Ot+bxkY3UPLFevOE7DTcTFCNXNUzFYAIA8o7gSPSasZ7+23YWFuqfczfScyFPgdiJ6c4R0lUJ6NbatsSw==",
+      "type": "package",
+      "path": "portcmis/0.3.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netstandard1.1/PortCMIS.dll",
+        "portcmis.0.3.0.nupkg.sha512",
+        "portcmis.nuspec"
+      ]
+    },
     "RestSharp/112.1.0": {
       "sha512": "bOUGNZqhhv/QeCXHTKEUil846yBjwWXpzPKjO67kFvaAOoF361z7jLY5BMnuZ6WD2WQRA750sNMcK7MSPCQ5Mg==",
       "type": "package",
@@ -1135,6 +1156,7 @@
       "Microsoft.AspNetCore.OpenApi >= 8.0.19",
       "Mongodb.Driver >= 3.4.3",
       "Newtonsoft.Json >= 13.0.3",
+      "PortCMIS >= 0.3.0",
       "RestSharp >= 112.1.0",
       "Swashbuckle.AspNetCore >= 6.5.0"
     ]
@@ -1194,6 +1216,10 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[13.0.3, )"
+          },
+          "PortCMIS": {
+            "target": "Package",
+            "version": "[0.3.0, )"
           },
           "RestSharp": {
             "target": "Package",

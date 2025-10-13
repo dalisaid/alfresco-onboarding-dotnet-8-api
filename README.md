@@ -10,7 +10,7 @@ A full‑stack onboarding project integrating **Angular**, **.NET 8 Minimal API*
 - Store **client metadata** in MongoDB (Login, Name, CIN, account info, etc.).
 - Automatically create a **folder in Alfresco** per client and populate `cm:title`/`cm:description` with client metadata.
 - Save files into the newly created Alfresco folder.
-- Angular frontend for form submission and file upload.
+- Angular frontend for form submission and file upload as well as display of all the client folders and their contents.
 - .NET 8 Minimal API backend handling uploads, saving metadata to MongoDB, and Alfresco integration.
 
 ---
@@ -38,11 +38,14 @@ Project-location/
 ├── On-Boarding-app-api/              # .NET 8 Web API
 │   ├── Program.cs
 │   ├── Services/
+│   │   └── AlfrescoPortCmisService.cs
 │   │   └── AlfrescoService.cs
 │   │   └── MongoService.cs
 │   ├── Models/
 │   │   └── Client.cs
-│   │   └── ClientFiles.cs
+│   │   └── ClientFileUpload.cs
+│   │   └── ClientFileRecord.cs
+│   │   └── ClientFolder.cs
 │   └── appsettings.json
 │
 └── README.md
@@ -95,7 +98,7 @@ Mongo settings and Alfresco config `server/appsettings.json`:
     "BaseUrl": "http://localhost:8080",// nginx proxy handles communicating with alfresco 
     "Username": "admin",
     "Password": "admin",
-    "LibraryNodeId":"792295f5-3998-40f4-8179-852f110cb033"
+    "FolderNodeId":"792295f5-3998-40f4-8179-852f110cb033"
   }
 }
 ```
@@ -168,9 +171,13 @@ public async Task<string> CreateFolder(Client folderData) //creates folder insid
     }
 
 ```
-How it looks like:
+Front:
 
 ![app](Images/app-snip.png)
+![app](Images/app-snip-2.png)
+
+Back:
+
 ![alfresco folder](Images/alfresco-snip-folder.png)
 ![alfresco file](Images/alfresco-snip-file.png)
 ![Mongo](Images/mongo-snip.png)

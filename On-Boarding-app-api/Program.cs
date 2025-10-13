@@ -8,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient<AlfrescoService>();
 builder.Services.AddSingleton<MongoService>();
 builder.Services.AddSingleton<AlfrescoService>();
+builder.Services.AddSingleton<AlfrescoPortCmisService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddCors(options => options.AddPolicy("AngularClient", policy =>
@@ -32,8 +34,8 @@ app.MapPost("/onboarding", async (Client data,MongoService mongo ) =>
     }
     catch (Exception ex)
     {
-        Console.WriteLine("ERROR: " + ex.Message);
-        return Results.Problem("Internal Server Error: " + ex.Message);
+        Console.WriteLine("API Error: " + ex.Message);
+        return Results.Problem("Mongo Post API Error : " + ex.Message);
     }
 });
 
@@ -42,15 +44,15 @@ app.MapPost("/onboarding/files", [Microsoft.AspNetCore.Authorization.AllowAnonym
 async (HttpRequest request, AlfrescoService alfresco) => // switched here to http request because [fromform] causes anti forgery error
 {
 
-    
+
     // setting up cinfront and cinback in formfiles
-    if (!request.HasFormContentType) 
+    if (!request.HasFormContentType)
         return Results.BadRequest("Expected multipart/form-data");
     var formFiles = await request.ReadFormAsync();
 
     //setting up metadata here to be added to the new folder in alfresco
     var metadata = request.Query["metadata"];
- if (string.IsNullOrEmpty(metadata))
+    if (string.IsNullOrEmpty(metadata))
         return Results.BadRequest("Metadata is required");
 
     // Decode and deserialize JSON
@@ -74,6 +76,26 @@ async (HttpRequest request, AlfrescoService alfresco) => // switched here to htt
 
     return Results.Ok(new { message = $"Files uploaded under folder {formData.CIN}" });
 }).RequireCors(cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); //probably unecessary
+
+
+
+
+app.MapGet("/cmis/folder", ( AlfrescoPortCmisService cmis) =>
+{
+    try
+    {
+        var files = cmis.GetClientUploads();
+        return Results.Ok(files);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine(" API Error: " + ex.Message);
+        return Results.Problem("Alfresco Get API Error : " + ex.Message);
+
+     }
+  
+    
+});
 
 
 app.Run();
