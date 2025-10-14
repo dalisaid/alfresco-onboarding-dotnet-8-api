@@ -2,6 +2,8 @@ using OnboardingApi.Models;
 using OnboardingApi.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
+using PortCMIS.Client;
+using PortCMIS.Client.Impl;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -80,7 +82,7 @@ async (HttpRequest request, AlfrescoService alfresco) => // switched here to htt
 
 
 
-app.MapGet("/cmis/folder", ( AlfrescoPortCmisService cmis) =>
+app.MapGet("/cmis/folder", (AlfrescoPortCmisService cmis) =>
 {
     try
     {
@@ -92,9 +94,20 @@ app.MapGet("/cmis/folder", ( AlfrescoPortCmisService cmis) =>
         Console.WriteLine(" API Error: " + ex.Message);
         return Results.Problem("Alfresco Get API Error : " + ex.Message);
 
-     }
-  
-    
+    }
+
+
+});
+
+app.MapGet("/api/files/{*id}", async (string id, AlfrescoPortCmisService cmis) =>
+{
+    var _session = cmis.Session;
+    id = Uri.UnescapeDataString(id);
+    var doc = (IDocument)_session.GetObject(id);
+    if (doc == null) return Results.NotFound();
+
+    var stream = doc.GetContentStream().Stream;
+    return Results.File(stream, doc.ContentStreamMimeType ?? "application/octet-stream", doc.Name);
 });
 
 

@@ -83,10 +83,11 @@ No Docker setup is required for MongoDB.
 
 
 
-### 3) appsettings.json (server)
+### 3) appsettings.json and environment.ts
 
-Mongo settings and Alfresco config `server/appsettings.json`:
+Switch these variables to your prefered configuration.
 
+appsettings.json:
 ```json
 {
   "MongoSettings": {
@@ -101,6 +102,13 @@ Mongo settings and Alfresco config `server/appsettings.json`:
     "FolderNodeId":"792295f5-3998-40f4-8179-852f110cb033"
   }
 }
+```
+environment.ts:
+```ts
+export const environment = {
+  production: false,
+  apiBaseUrl: 'http://localhost:5122'
+};
 ```
 
 ### 4) MongoService and AlfrescoService in `Program.cs`
@@ -169,6 +177,52 @@ public async Task<string> CreateFolder(Client folderData) //creates folder insid
         var json = await response.Content.ReadFromJsonAsync<JsonElement>();
         return json.GetProperty("entry").GetProperty("id").GetString()!;// return id of folder created to use in uploadfile
     }
+
+```
+
+AlfrescoPostCmisService:
+
+
+```csharp
+ public List<ClientFolder> GetClientUploads()
+    {
+        string parentFolderId = _config["Alfresco:FolderNodeId"]
+            ?? throw new InvalidOperationException("FolderNodeId not configured in CMIS");
+
+        var parentFolder = (IFolder)_session.GetObject(parentFolderId);
+        var uploads = new List<ClientFolder>();
+
+        foreach (var child in parentFolder.GetChildren())
+        {
+            if (child is IFolder subFolder)
+            {
+
+
+                var upload = new ClientFolder
+                {
+                    FolderName = subFolder.Name,
+                    Title = subFolder.GetPropertyValue("cm:title")?.ToString() ?? "failed to fetch title",
+                    Description = subFolder.GetPropertyValue("cm:description")?.ToString() ?? "failed to fetch description"
+                };
+
+                foreach (var doc in subFolder.GetChildren().OfType<IDocument>())
+                {
+                    
+                    upload.Files.Add(new ClientFileRecord
+                    {
+                        FileName = doc.Name,
+                        FilePath = $"{subFolder.Name}/{doc.Name}",
+                        DownloadUrl = "/api/files/" + Uri.EscapeDataString(doc.Id)
+                    });
+                }
+
+                uploads.Add(upload);
+            }
+        }
+
+        return uploads;
+    }
+
 
 ```
 Front:
@@ -245,6 +299,21 @@ async (HttpRequest request, AlfrescoService alfresco) => // switched here to htt
     return Results.Ok(new { message = $"Files uploaded under folder {formData.CIN}" });
 }).RequireCors(cors => cors.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader()); //probably unecessary
 
+
+```
+
+Api for downloading files from alfresco:
+```csharp
+app.MapGet("/api/files/{*id}", async (string id, AlfrescoPortCmisService cmis) =>
+{
+    var _session = cmis.Session;
+    id = Uri.UnescapeDataString(id);
+    var doc = (IDocument)_session.GetObject(id);
+    if (doc == null) return Results.NotFound();
+
+    var stream = doc.GetContentStream().Stream;
+    return Results.File(stream, doc.ContentStreamMimeType ?? "application/octet-stream", doc.Name);
+});
 
 ```
 

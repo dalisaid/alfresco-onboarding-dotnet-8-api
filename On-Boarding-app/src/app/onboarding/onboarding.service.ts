@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environments';
 
 @Injectable({
   providedIn: 'root'
 })
 export class OnboardingService {
-  private apiUrl = 'http://localhost:5122'; // adjust port if needed
+  private apiUrl = environment.apiBaseUrl; // adjust port if needed
 
   constructor(private http: HttpClient) {}
 

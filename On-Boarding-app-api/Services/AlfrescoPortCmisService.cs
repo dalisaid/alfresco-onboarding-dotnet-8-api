@@ -28,15 +28,17 @@ public class AlfrescoPortCmisService
         _session = factory.GetRepositories(parameters)[0].CreateSession();
     }
 
+    public PortCMIS.Client.ISession Session => _session;
 
-    public byte[] ImageStream(IDocument doc )// can use api links instead for bigger files 
+
+    public byte[] ImageStream(IDocument doc)// no longer in use switched to  urls for file streaming
     {
         byte[] filebytes;
         using (var stream = doc.GetContentStream().Stream)
         using (var memoryStream = new MemoryStream())
         {
             stream.CopyTo(memoryStream);
-             filebytes = memoryStream.ToArray();
+            filebytes = memoryStream.ToArray();
         }
         return filebytes;
     }
@@ -72,7 +74,7 @@ public class AlfrescoPortCmisService
                     {
                         FileName = doc.Name,
                         FilePath = $"{subFolder.Name}/{doc.Name}",
-                        FileContentBase64 = Convert.ToBase64String(ImageStream(doc))
+                        DownloadUrl = "/api/files/" + Uri.EscapeDataString(doc.Id)
                     });
                 }
 

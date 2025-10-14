@@ -15,8 +15,8 @@
       <!-- Thumbnail -->
       <div class="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
         <img
-          *ngIf="file.fileContentBase64"
-          [src]="'data:image/' + (file.fileName.split('.').pop()) + ';base64,' + file.fileContentBase64"
+          *ngIf="file.downloadUrl"
+          [src]="apiUrl+file.downloadUrl"
           [alt]="file.fileName"
           class="object-cover w-full h-full"
         />
